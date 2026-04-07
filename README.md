@@ -81,43 +81,52 @@ The actor subsequently leveraged this access to expand their presence and contin
 ## Evidence Sources & Analysis
 After gaining initial access on November 19, 2025, the threat actor resumed activity approximately 72 hours later (2025-11-22T00:27:58Z), as identified through SOC monitoring. This activity included lateral movement within the network and large-volume data transfers occurring during off-hours on the file server, indicating potential data staging or exfiltration efforts.
 
-<img width="1168" height="304" alt="image" src="https://github.com/user-attachments/assets/bd9e8334-3d45-45f3-87eb-d2d452ae764d" />
+<img width="1168" height="304" alt="white_background_image" src="https://github.com/user-attachments/assets/8e7457e1-8d4c-4090-a870-4f9cb7cfee48" />
+
 
 The remote IP `159.26.106.98` made a successful logon to the device `azuki-sl` through the compromised account `kenji.sato` at `2025-11-22T00:27:58.4166424Z`. After this point, suspicious actions were taken and malicious intent were apparent.<br>
 
-<img width="1968" height="498" alt="image" src="https://github.com/user-attachments/assets/ec2d9532-d6c5-46cf-b2e4-656478fc04dd" />
+<img width="1968" height="498" alt="image" src="https://github.com/user-attachments/assets/aba5dd4d-bc3f-4ca3-970c-caa72ddf32fb" />
+
 
 Lateral movement was identified across multiple systems, with activity originating from the process mstsc.exe, indicating the use of Remote Desktop Protocol (RDP) as a remote access mechanism. This behavior suggests the threat actor leveraged legitimate administrative tools to move laterally within the environment.
 
-<img width="1781" height="553" alt="image" src="https://github.com/user-attachments/assets/74724b07-62a7-4bf4-a785-416eb6a43c1b" />
+<<img width="1781" height="553" alt="image" src="https://github.com/user-attachments/assets/3b73ae58-d811-4768-80c7-fb911e39a704" />
+
 
 Queries for any remote sessions with successful logon attempts discovered suspicious activity involving the critical fileserver `azuki-fileserver01`.
 
-<img width="1816" height="488" alt="image" src="https://github.com/user-attachments/assets/fcc5792a-a78c-44de-9fa7-00a9b9c77d53" />
+<img width="1816" height="488" alt="image" src="https://github.com/user-attachments/assets/459cbd87-5546-49f3-8246-2343a3fc81fb" />
+
 
 Ongoing lateral movement led to the compromise of the administrative account fileadmin, which was subsequently used to facilitate privilege escalation and expanded enumeration activities. This indicates the threat actor successfully elevated access to a higher-privileged context to further their objectives within the environment.
 
-<img width="1756" height="543" alt="image" src="https://github.com/user-attachments/assets/237afb96-5af7-439a-a50a-8b92fa8077ea" />
+<img width="1756" height="543" alt="image" src="https://github.com/user-attachments/assets/739e17a2-a76f-4ce5-8645-f932d3cdd5f3" />
+
 
 At 2025-11-22T00:40:54Z, the threat actor initiated network enumeration using net.exe share to identify available shared resources. This activity was followed by remote share enumeration at 2025-11-22T00:42:01Z via net.exe view \\10.1.0.188, enabling the discovery of accessible file servers and data repositories within the environment.
 
 This sequence of commands indicates systematic reconnaissance to map network resources and identify potential targets for further access and data collection
 
-<img width="1587" height="432" alt="image" src="https://github.com/user-attachments/assets/381aee74-2986-4a2c-960a-b84ff2c934fe" />
+<img width="1587" height="432" alt="image" src="https://github.com/user-attachments/assets/62b22581-8aba-4e4c-adb9-ac3aa122e0b3" />
+
 
 Privilege enumeration tactics continued with intent to determine what actions can be performed and whether privilege escalation is required.
 
-<img width="1529" height="397" alt="image" src="https://github.com/user-attachments/assets/1bd58659-5f3f-463e-9eb0-53a083a512b3" />
+<img width="1529" height="397" alt="image" src="https://github.com/user-attachments/assets/6ed4a98a-172f-4090-8e46-62d61b8a2bf5" />
+
 
 The threat actor conducted network configuration enumeration to gain situational awareness of the environment, including identifying domain membership and mapping additional network segments. This activity suggests deliberate reconnaissance to support further lateral movement and target identification..
 
-<img width="1558" height="397" alt="image" src="https://github.com/user-attachments/assets/32e20007-5f59-46d0-b5ce-c22fd74fa1a0" />
+<img width="1558" height="397" alt="image" src="https://github.com/user-attachments/assets/cc162bc3-fef5-4223-8c4f-785f78772286" />
+
 
 The threat actor modified file system attributes to conceal a staging directory, likely to evade detection by users and security tools. A directory at C:\Windows\Logs\CBS was established and utilized to organize malicious tools and staged data prior to exfiltration.
 
 This directory has been confirmed as a critical Indicator of Compromise (IoC) and is directly associated with the observed malicious activity.
 
-<img width="1877" height="538" alt="image" src="https://github.com/user-attachments/assets/c788caaf-38fd-4a27-8e2e-6eda6d9ddf54" />
+<img width="1877" height="538" alt="image" src="https://github.com/user-attachments/assets/0d56e891-a6b0-4e3d-b81e-2d5b8f26636a" />
+
 
 Initial evidence of malicious command execution indicates the threat actor leveraged legitimate system utilities with network functionality to download a suspicious script. This behavior is consistent with Living-off-the-Land (LotL) techniques, allowing the actor to blend in with normal system activity and evade detection.
 
@@ -127,43 +136,54 @@ Telemetry confirms that the PowerShell script ex.ps1 was retrieved from the exte
 
 The staged data was subsequently exfiltrated via a cloud service, suggesting the use of trusted platforms to evade detection and bypass traditional network security controls.
 
-<img width="1409" height="524" alt="image" src="https://github.com/user-attachments/assets/b59ab898-9cb3-4387-a55d-48f06d0fafed" />
+<img width="1409" height="524" alt="image" src="https://github.com/user-attachments/assets/ad753c60-9707-419c-9918-a0d7ed03b1af" />
+
 
 A credential file, IT-Admin-Passwords.csv, was created within the staging directory, indicating the aggregation of sensitive authentication data. The file name strongly suggests targeted collection of administrative credentials, which could be leveraged for privilege escalation, persistence, or further lateral movement within the environment.
 
-<img width="1977" height="517" alt="image" src="https://github.com/user-attachments/assets/a956cee7-d900-4ed6-801a-baeb992e2a2a" />
+<img width="1977" height="517" alt="image" src="https://github.com/user-attachments/assets/e31e3af5-060b-4a64-8df8-20478fc14678" />
+>
 
 The threat actor leveraged native system utilities to stage data from a network share, employing Living-off-the-Land (LotL) techniques to reduce the likelihood of detection and bypass security controls. This approach enabled the actor to blend malicious activity with legitimate system operations.
 
-<img width="1838" height="491" alt="image" src="https://github.com/user-attachments/assets/db3dc076-d115-4175-a55d-d5d46e586394" />
+<img width="1838" height="491" alt="image" src="https://github.com/user-attachments/assets/cde12441-a87a-4571-ae43-e039a1d0d4b4" />
+
 
 The threat actor employed cross-platform compression utilities to archive and consolidate staged data, facilitating efficient collection and preparation for exfiltration. This activity indicates deliberate data packaging to support large-scale data transfer while minimizing detection.
 
-<img width="1182" height="335" alt="image" src="https://github.com/user-attachments/assets/7e6d67df-9838-4aca-8e79-553c9d68cae5" />
+<img width="1182" height="335" alt="image" src="https://github.com/user-attachments/assets/bb129fff-655c-46a7-ad7c-e45a5578bde2" />
+
 
 The threat actor renamed the credential dumping tool to pd.exe to reduce its visibility and evade detection by security controls. This behavior reflects an attempt to disguise malicious tooling and blend in with legitimate system processes.
 
-<img width="1542" height="392" alt="image" src="https://github.com/user-attachments/assets/4cdeab92-9dfe-490b-be4e-89c7404f5bf4" />
+<img width="1542" height="392" alt="image" src="https://github.com/user-attachments/assets/8c2d6fe8-5941-47bf-875f-78f93f739dfa" />
+
 
 Evidence of credential dumping was identified via process memory extraction targeting lsass.exe, a critical Windows security process responsible for handling authentication data. Analysis indicates that the renamed tool pd.exe executed the command pd.exe -accepteula -ma 876 C:\Windows\Logs\CBS\lsass.dmp to generate a memory dump containing credential material, which was then stored in the staging directory.
 
 This behavior is consistent with established credential access techniques aimed at extracting sensitive authentication material, including plaintext credentials, password hashes, and Kerberos tickets. Such data can be leveraged to enable privilege escalation, sustain unauthorized access, and support further lateral movement across the environment.
 
-<img width="1950" height="506" alt="image" src="https://github.com/user-attachments/assets/8bc85ab9-3341-4ce2-bb92-f45347318603" />
+<img width="1950" height="506" alt="image" src="https://github.com/user-attachments/assets/0e734a13-a9fa-4919-844d-4e231bd34bc0" />
+
 
 Confirmed data exfiltration was performed using command-line HTTP clients, allowing the threat actor to conduct scripted and automated data transfers over standard web protocols. This technique supports stealthy exfiltration by blending with legitimate network traffic.
 
 The associated command patterns should be incorporated into detection rules to enhance monitoring and response capabilities. Telemetry indicates multiple outbound transfers involving files with varying names, raising a high likelihood of sensitive stakeholder data being exfiltrated.
 
-<img width="1973" height="472" alt="image" src="https://github.com/user-attachments/assets/ff379502-3cc9-4687-a2e0-0971ff6cafba" />
+<img width="1973" height="472" alt="image" src="https://github.com/user-attachments/assets/8bbbef60-ee3f-4694-a5b4-3fae2e0a4d61" />
+
 
 Persistence was established via modification of a registry autostart location through the creation of the value FileShareSync. The value name was intentionally crafted to appear legitimate, suggesting an attempt to blend malicious persistence mechanisms with normal system activity and evade detection by security controls.
 
-<img width="1897" height="485" alt="image" src="https://github.com/user-attachments/assets/fdb1b189-1ef3-4a13-b809-5bb06cdeaa45" />
+<img width="1897" height="485" alt="image" src="https://github.com/user-attachments/assets/b0fbdaf2-1f30-4cd8-9d7c-d3108ab13457" />
+
 
 Persistence mechanisms were identified in the form of an obfuscated PowerShell script, svchost.ps1, likely designed to blend in with legitimate system processes. The use of obfuscation indicates deliberate efforts to evade detection while maintaining continued access within the environment.
 
-<img width="1380" height="402" alt="image" src="https://github.com/user-attachments/assets/a50b976e-ccda-4614-9f1a-2566a0fdf18b" />
+<img width="1897" height="485" alt="image" src="https://github.com/user-attachments/assets/0a5ba785-9945-4849-ad0f-34f601b84081" />
+
+
+
 
 Evidence of anti-forensic behavior was observed with the deletion of the PowerShell history file ConsoleHost_history.txt, which normally retains command history across sessions. This action suggests a deliberate effort by the threat actor to remove traces of executed commands and impede investigative and forensic efforts.
 
