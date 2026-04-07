@@ -27,10 +27,10 @@
 - INC2025-0011-019
 
 ## Incident Severity:
-- Severity 1 (Critical)
+ (Critical)
 
 ## Incident Status:
-- Resolved
+- done
 
 ## Incident Overview:
 - Following initial access on November 19th, the threat actor re-established presence approximately 72 hours later at 2025-11-22T00:27:58Z. Subsequent activity included lateral movement within the network and large-scale data transfers observed on the file server during off-hours.
